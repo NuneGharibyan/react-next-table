@@ -3,8 +3,9 @@ import axios from "axios";
 
 const BASE_URL = "https://api.openbrewerydb.org/v1/breweries";
 
-export const getBreweries = async (): Promise<IBrewery[]> => {
-  const response = await axios.get<IBrewery[]>(BASE_URL);
+export const getBreweries = async (search?: string): Promise<IBrewery[]> => {
+  const query: string = search ? `/search?query=${search}` : "";
+  const response = await axios.get<IBrewery[]>(`${BASE_URL}${query}`);
 
   return response.data;
 };

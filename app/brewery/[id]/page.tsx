@@ -1,37 +1,49 @@
 "use client";
 
+import withAuth from "@/hoc/withAuth";
 import { getBreweryById } from "@/services/breweryService";
 import { IBrewery } from "@/types/brewery";
 import { Card } from "antd";
+import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import styles from "./page.module.css";
 
-export default function Brewery() {
+function Brewery() {
   const params = useParams<{ id: string }>();
 
   const [brewery, setBrewery] = useState<IBrewery>();
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const getBreweryData = async (): Promise<void> => {
-      const breweries = await getBreweryById(params.id);
+  const getBrewery = useCallback(async (): Promise<void> => {
+    const breweries = await getBreweryById(params.id);
 
-      setBrewery(breweries);
-      setLoading(false);
-    };
-
-    getBreweryData();
+    setBrewery(breweries);
+    setLoading(false);
   }, [params.id]);
 
+  useEffect(() => {
+    getBrewery();
+  }, [getBrewery]);
+
   return (
-    <Card loading={loading} style={{ minWidth: 300 }}>
+    <Card loading={loading} className={styles.card}>
       {brewery && (
         <Card.Meta
-          title={brewery?.name}
+          title={brewery.name}
           description={
             <>
-              <p>{brewery?.brewery_type}</p>
-              <p>{brewery?.country}</p>
+              <p>Brewery type: {brewery.brewery_type}</p>
+              <p>
+                Address: {brewery.street}, {brewery.city}, {brewery.state},{" "}
+                {brewery?.country}
+              </p>
+              {brewery.website_url && (
+                <Link href={brewery.website_url} passHref={true}>
+                  WebSite URL
+                </Link>
+              )}
+              {brewery.phone && <p>Phone: {brewery.phone}</p>}
             </>
           }
         />
@@ -39,3 +51,5 @@ export default function Brewery() {
     </Card>
   );
 }
+
+export default withAuth(Brewery);
