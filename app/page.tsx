@@ -1,10 +1,10 @@
 "use client";
 
+import { ITableProps, Table } from "@/app/ui";
 import { getBreweries } from "@/services/breweryService";
 import { IBrewery } from "@/types/brewery";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ITableProps, Table } from "../components";
 
 const columns: ITableProps<IBrewery>["columns"] = [
   {
@@ -43,16 +43,18 @@ export default function Home() {
   const router = useRouter();
 
   const [breweries, setBreweries] = useState<IBrewery[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    const getBreweriesData = async (): Promise<void> => {
+      const breweries = await getBreweries();
+
+      setBreweries(breweries);
+      setLoading(false);
+    };
+
     getBreweriesData();
   }, []);
-
-  const getBreweriesData = async (): Promise<void> => {
-    const breweries = await getBreweries();
-
-    setBreweries(breweries);
-  };
 
   const onRowClick = (brewery: IBrewery): void => {
     router.push(`/brewery/${brewery.id}`);
@@ -60,13 +62,12 @@ export default function Home() {
 
   return (
     <div style={{ height: "100%", display: "flex" }}>
-      <div
-        style={{ padding: "30px", display: "flex", flexGrow: 1, width: "100%" }}
-      >
+      <div style={{ padding: "30px", flexGrow: 1, width: "100%" }}>
         <Table<IBrewery>
           data={breweries}
           columns={columns}
           onRowClick={onRowClick}
+          loading={loading}
         />
       </div>
     </div>

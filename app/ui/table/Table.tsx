@@ -8,9 +8,10 @@ export interface ITableProps<T> {
   data: T[];
   columns: TableColumnsType<T>;
   onRowClick: (item: T) => void;
+  loading?: boolean;
 }
 
-const Table = <T,>({ data, columns, onRowClick }: ITableProps<T>) => (
+const Table = <T,>({ data, columns, onRowClick, loading }: ITableProps<T>) => (
   <AntTable<T>
     columns={columns}
     dataSource={data}
@@ -23,6 +24,7 @@ const Table = <T,>({ data, columns, onRowClick }: ITableProps<T>) => (
         onRowClick(item);
       },
     })}
+    loading={loading}
   />
 );
 
