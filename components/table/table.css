@@ -1,0 +1,16 @@
+.ant-table-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-table-body {
+  flex: 1;
+}
+
+.ant-spin-nested-loading,
+.ant-spin-container,
+.ant-table-wrapper,
+.ant-table,
+.ant-table-container {
+  height: 100%;
+}
